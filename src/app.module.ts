@@ -7,7 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { appConfig } from './configurations/app.config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { JwtGuard } from './modules/auth/guards/jwt.guard';
+import { JwtAuthGuard } from './modules/auth/guards/jwt.guard';
 import { BlogsModule } from './modules/blogs/blogs.module';
 
 @Module({
@@ -38,7 +38,7 @@ import { BlogsModule } from './modules/blogs/blogs.module';
     },
     {
       provide: APP_GUARD,
-      useClass: JwtGuard,
+      useClass: JwtAuthGuard,
     },
   ],
 })
