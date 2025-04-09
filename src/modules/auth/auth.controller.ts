@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Get,
   UseGuards,
-  UnauthorizedException,
   Req,
 } from '@nestjs/common';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';

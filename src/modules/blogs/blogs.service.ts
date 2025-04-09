@@ -5,7 +5,7 @@ import { Post } from './blog.entity';
 import { User } from '../users/user.entity';
 
 @Injectable()
-export class PostsService {
+export class BlogsService {
   constructor(
     @InjectRepository(Post)
     private readonly postsRepository: Repository<Post>,

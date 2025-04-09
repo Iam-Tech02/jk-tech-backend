@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateBlogDto } from './dto/create-blog.dto';
 
 @Controller('posts')
-export class PostsController {
+export class BlogsController {
   constructor(private readonly postsService: PostsService) {}
 
   // Fetch only the logged-in user's posts
