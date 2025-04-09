@@ -100,4 +100,10 @@ export class AuthController {
   async facebookAuthRedirect(@Req() req) {
     return this.authService.login(req.user);
   }
+
+  @Post('facebook')
+  @UseGuards(AuthGuard('facebook-token'))
+  async facebookLogin(@Req() req) {
+    return this.authService.validateFacebookLogin(req.user);
+  }
 }

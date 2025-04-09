@@ -69,4 +69,13 @@ export class AuthService {
     const JwtSignOptions = this.getJwtSignOptions();
     return this.jwtService.signAsync(payload, JwtSignOptions);
   }
+
+  async validateFacebookLogin(profile: any): Promise<any> {
+    await this.userService.findOrCreate(profile);
+
+    return {
+      message: 'User logged in with Facebook',
+      user: profile,
+    };
+  }
 }

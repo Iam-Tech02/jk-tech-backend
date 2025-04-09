@@ -1,11 +1,11 @@
 import { Controller, Get, UseGuards, Req, Post, Body, Request, Param, NotFoundException, Put, Delete } from '@nestjs/common';
-import { PostsService } from './blogs.service';
+import { BlogsService } from './blogs.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateBlogDto } from './dto/create-blog.dto';
 
 @Controller('posts')
 export class BlogsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: BlogsService) {}
 
   // Fetch only the logged-in user's posts
   @UseGuards(JwtAuthGuard)
