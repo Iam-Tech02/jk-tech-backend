@@ -2,7 +2,6 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Post } from './blog.entity';
-import { CreateBlogDto } from './dto/create-blog.dto';
 import { User } from '../users/user.entity';
 
 @Injectable()
