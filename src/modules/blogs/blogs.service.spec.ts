@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostsService } from './blogs.service';
+import { BlogsService } from './blogs.service';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 describe('BlogsService', () => {
-  let blogsService: PostsService;
+  let blogsService: BlogsService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       providers: [
-        PostsService,
+        BlogsService,
         {
           provide: PrismaService,
           useValue: {
@@ -31,7 +31,7 @@ describe('BlogsService', () => {
       ],
     }).compile();
 
-    blogsService = moduleRef.get<PostsService>(PostsService);
+    blogsService = moduleRef.get<BlogsService>(BlogsService);
     prismaService = moduleRef.get<PrismaService>(PrismaService);
   });
 
@@ -61,7 +61,7 @@ describe('BlogsService', () => {
       ];
       prismaService.blog.findMany = jest.fn().mockResolvedValue(mockBlogs);
 
-      const result = await blogsService.findAll();
+      const result = await blogsService.findAll(1);
 
       expect(prismaService.blog.findMany).toHaveBeenCalledWith({
         where: { isDeleted: false },
@@ -130,7 +130,7 @@ describe('BlogsService', () => {
       const mockUpdatedBlog = { id: 1, ...updateBlogDto };
       prismaService.blog.update = jest.fn().mockResolvedValue(mockUpdatedBlog);
 
-      const result = await blogsService.update(1, 1, updateBlogDto);
+      const result = await blogsService.update(1, updateBlogDto);
 
       expect(prismaService.blog.update).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -145,7 +145,7 @@ describe('BlogsService', () => {
       const mockDeletedBlog = { id: 1, isDeleted: true };
       prismaService.blog.update = jest.fn().mockResolvedValue(mockDeletedBlog);
 
-      const result = await blogsService.remove(1, 1);
+      const result = await blogsService.remove(1);
 
       expect(prismaService.blog.update).toHaveBeenCalledWith({
         where: { id: 1 },

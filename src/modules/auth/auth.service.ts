@@ -17,11 +17,16 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+  async login(email: string, plainPassword: string) {
+    const nullableUser = await this.userService.findOneByEmail(email, true);
+    const user = this.isEntityFound(nullableUser);
+    if (!user?.password) {
+      throw new UnauthorizedException();
+    }
+    await this.matchPassword(user.password, plainPassword);
+    const access_token = await this.signJwt(user.id, user.role.name);
     return {
-      access_token: this.jwtService.sign(payload),
-      user,
+      access_token,
     };
   }
 
@@ -29,7 +34,7 @@ export class AuthService {
     return this.configService.getOrThrow<AppConfig['jwt']['secret']>(
       'jwt.secret',
     );
-  } 
+  }
 
   private getJwtExpiry() {
     return this.configService.getOrThrow<AppConfig['jwt']['expiry']>(
@@ -68,14 +73,5 @@ export class AuthService {
     const payload = this.makeJwtPayload(userId, role);
     const JwtSignOptions = this.getJwtSignOptions();
     return this.jwtService.signAsync(payload, JwtSignOptions);
-  }
-
-  async validateFacebookLogin(profile: any): Promise<any> {
-    await this.userService.findOrCreate(profile);
-
-    return {
-      message: 'User logged in with Facebook',
-      user: profile,
-    };
   }
 }

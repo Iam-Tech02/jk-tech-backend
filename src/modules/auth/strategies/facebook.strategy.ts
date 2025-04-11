@@ -1,28 +1,32 @@
-// src/auth/strategies/facebook.strategy.ts
-
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { Strategy } from 'passport-facebook-token';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-facebook';
+import { UsersService } from 'src/modules/users/users.service';
 
 @Injectable()
-export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook-token') {
-  constructor() {
+export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
+  constructor(private readonly userService: UsersService) {
     super({
-      clientID: 'YOUR_FACEBOOK_APP_ID',
-      clientSecret: 'YOUR_FACEBOOK_APP_SECRET',
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+      profileFields: ['id', 'emails', 'name', 'picture.type(large)'],
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: any, done: Function) {
-    // Here you can handle the user (e.g. create user if not exists)
-    const { id, displayName, emails } = profile;
-
-    const user = {
-      facebookId: id,
-      name: displayName,
-      email: emails?.[0]?.value,
-    };
-
-    done(null, user);
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: Function,
+  ) {
+    const { id, name, emails, photos } = profile;
+    return done(null, {
+      provider: 'facebook',
+      providerId: id,
+      email: emails[0]?.value,
+      name: `${name.givenName} ${name.familyName}`,
+      picture: photos[0]?.value,
+    });
   }
-}
+} 

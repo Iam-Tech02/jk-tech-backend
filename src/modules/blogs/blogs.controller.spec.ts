@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { messagesConstant } from 'src/common/constants';
-import { PostsController } from './blogs.controller';
-import { PostsService } from './blogs.service';
+import { BlogsController } from './blogs.controller';
+import { BlogsService } from './blogs.service';
 
 describe('BlogsController', () => {
-  let blogsController: PostsController;
-  let blogsService: PostsService;
+  let blogsController: BlogsController;
+  let blogsService: BlogsService;
 
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      controllers: [PostsController],
+      controllers: [BlogsController],
       providers: [
         {
-          provide: PostsService,
+          provide: BlogsService,
           useValue: {
             create: jest.fn(),
             findAll: jest.fn(),
@@ -25,8 +25,8 @@ describe('BlogsController', () => {
       ],
     }).compile();
 
-    blogsController = moduleRef.get<PostsController>(PostsController);
-    blogsService = moduleRef.get<PostsService>(PostsService);
+    blogsController = moduleRef.get<BlogsController>(BlogsController);
+    blogsService = moduleRef.get<BlogsService>(BlogsService);
   });
 
   describe('create', () => {
@@ -52,7 +52,7 @@ describe('BlogsController', () => {
       const mockBlogs = [{ id: 1, title: 'Blog 1' }];
       blogsService.findAll = jest.fn().mockResolvedValue(mockBlogs);
 
-      const result = await blogsController.findAll();
+      const result = await blogsController.findAll({ page: 1 });
 
       expect(blogsService.findAll).toHaveBeenCalledWith(1);
       expect(result).toEqual({
@@ -91,7 +91,7 @@ describe('BlogsController', () => {
       const mockBlog = { id: 1, title: 'Old Blog' };
       blogsService.findOneById = jest.fn().mockResolvedValue(mockBlog);
 
-      await expect(blogsController.update(1, 1, updateBlogDto)).resolves.toEqual({
+      await expect(blogsController.update(1, updateBlogDto)).resolves.toEqual({
         message: messagesConstant.BLOG_UPDATED,
       });
 
@@ -102,7 +102,7 @@ describe('BlogsController', () => {
       blogsService.findOneById = jest.fn().mockResolvedValue(null);
 
       await expect(
-        blogsController.update(1, 1, {
+        blogsController.update(1, {
           title: 'Updated Blog',
           about: '',
           brief: '',
@@ -116,7 +116,7 @@ describe('BlogsController', () => {
       const mockBlog = { id: 1, title: 'Blog to delete' };
       blogsService.findOneById = jest.fn().mockResolvedValue(mockBlog);
 
-      await expect(blogsController.remove(1, 1)).resolves.toEqual({
+      await expect(blogsController.remove(1)).resolves.toEqual({
         message: messagesConstant.BLOG_DELETED,
       });
 
@@ -126,7 +126,7 @@ describe('BlogsController', () => {
     it('should throw NotFoundException if blog is not found', async () => {
       blogsService.findOneById = jest.fn().mockResolvedValue(null);
 
-      await expect(blogsController.remove(1, 1)).rejects.toThrow(
+      await expect(blogsController.remove(1)).rejects.toThrow(
         NotFoundException,
       );
     });

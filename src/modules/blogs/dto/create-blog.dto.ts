@@ -17,5 +17,11 @@ export class CreateBlogDto {
   @MaxLength(200)
   @IsNotEmpty()
   @IsDefined()
-  body: string;
+  about: string;
+
+  @MaxLength(100000)
+  @IsString()
+  @IsNotEmpty()
+  @IsDefined()
+  brief: string;
 }

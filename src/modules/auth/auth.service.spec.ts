@@ -64,7 +64,7 @@ describe('AuthService', () => {
 
       usersService.findOneByEmail = jest.fn().mockResolvedValue(mockUser);
 
-      const result = await authService.login({email: 'notfound@example.com', password: 'password123'});
+      const result = await authService.login('user@example.com', 'password123');
 
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
         'user@example.com',
@@ -85,7 +85,7 @@ describe('AuthService', () => {
       usersService.findOneByEmail = jest.fn().mockResolvedValue(null);
 
       await expect(
-        authService.login({email: 'notfound@example.com', password: 'password123'}),
+        authService.login('notfound@example.com', 'password123'),
       ).rejects.toThrow(UnauthorizedException);
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
         'notfound@example.com',
@@ -104,7 +104,7 @@ describe('AuthService', () => {
       usersService.findOneByEmail = jest.fn().mockResolvedValue(mockUser);
 
       await expect(
-        authService.login({email: 'notfound@example.com', password: 'password123'}),
+        authService.login('user@example.com', 'password123'),
       ).rejects.toThrow(UnauthorizedException);
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
         'user@example.com',
@@ -126,7 +126,7 @@ describe('AuthService', () => {
         .mockRejectedValue(new UnauthorizedException());
 
       await expect(
-        authService.login({email: 'notfound@example.com', password: 'password123'}),
+        authService.login('user@example.com', 'wrongpassword'),
       ).rejects.toThrow(UnauthorizedException);
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
         'user@example.com',

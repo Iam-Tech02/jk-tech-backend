@@ -1,49 +1,95 @@
-import { Controller, Get, UseGuards, Req, Post, Body, Request, Param, NotFoundException, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+  NotFoundException,
+  ParseIntPipe,
+  Put,
+} from '@nestjs/common';
+import { messagesConstant } from 'src/common/constants/messages.constant';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BlogsService } from './blogs.service';
-import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateBlogDto } from './dto/create-blog.dto';
+import { FindAllBlogsDto } from './dto/find-all-blogs.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
+import { Public, User } from 'src/common/decorators';
+import { FindUserByIdResponse } from 'src/common/types/response.type';
 
-@Controller('posts')
+@ApiTags('Blogs')
+@Controller({
+  path: 'blogs',
+  version: '1',
+})
 export class BlogsController {
-  constructor(private readonly postsService: BlogsService) {}
+  constructor(private readonly blogsService: BlogsService) {}
 
-  // Fetch only the logged-in user's posts
-  @UseGuards(JwtAuthGuard)
-  @Get('my-posts')
-  async getUserPosts(@Req() req) {
-    return this.postsService.findByUser(req.user.id);
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createPostDto: CreateBlogDto, @Request() req) {
-    return this.postsService.create(req.user, createPostDto);
+  async create(
+    @Body() createBlogDto: CreateBlogDto,
+    @User() user: FindUserByIdResponse,
+  ) {
+    await this.blogsService.create(user.id, createBlogDto);
+    return {
+      message: messagesConstant.ADD_BLOG_RESPONSE,
+    };
   }
 
-  @Get(':id') // Publicly accessible
-  async findOne(@Param('id') id: number) {
-    const post = await this.postsService.findOne(id);
-    if (!post) {
-      throw new NotFoundException(`Post with ID ${id} not found`);
-    }
-    return post;
-  }
-
-  // ✅ Get all posts (Public)
   @Get()
-  async findAll() {
-    return this.postsService.findAll();
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+  })
+  async findAll(@Query() queryParams: FindAllBlogsDto) {
+    const result = await this.blogsService.findAll();
+    return {
+      result,
+      message: messagesConstant.BLOGS_FETCHED,
+    };
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Public()
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const blog = await this.blogsService.findOneById(id);
+    if (!blog) {
+      throw new NotFoundException(messagesConstant.BLOG_NOT_FOUND);
+    }
+    return {
+      message: messagesConstant.BLOG_FETCHED,
+      result: blog,
+    };
+  }
+
   @Put(':id')
-  async update(@Request() req, @Param('id') id: number, @Body() updatePostDto) {
-    return this.postsService.update(req.user.id, id, updatePostDto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateBlogDto: UpdateBlogDto,
+  ) {
+    const blog = await this.blogsService.findOneById(id);
+    if (!blog) {
+      throw new NotFoundException(messagesConstant.BLOG_NOT_FOUND);
+    }
+
+    await this.blogsService.update(id, updateBlogDto);
+    return {
+      message: messagesConstant.BLOG_UPDATED,
+    };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Request() req, @Param('id') id: number) {
-    return this.postsService.remove(req.user.id, id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const blog = await this.blogsService.findOneById(id);
+    if (!blog) {
+      throw new NotFoundException(messagesConstant.BLOG_NOT_FOUND);
+    }
+    await this.blogsService.remove(id);
+    return {
+      message: messagesConstant.BLOG_DELETED,
+    };
   }
 }
