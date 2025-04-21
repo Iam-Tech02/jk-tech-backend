@@ -12,10 +12,10 @@ async function seed() {
     await prisma.role.createMany({
         data: [
             {
-                name: 'Admin',
+                name: 'SuperAdmin',
             },
             {
-                name: 'PowerUser',
+                name: 'Admin',
             },
             {
                 name: 'User',
@@ -28,7 +28,7 @@ async function seed() {
         },
     });
     const userRoleId = userRole.id;
-    const users = await Promise.all(Array.from({ length: 1000 }).map(async () => ({
+    const users = await Promise.all(Array.from({ length: 10 }).map(async () => ({
         name: faker_1.faker.person.fullName(),
         email: faker_1.faker.internet.email(),
         roleId: userRoleId,

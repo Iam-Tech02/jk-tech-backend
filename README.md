@@ -1,16 +1,3 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A blog application built with NestJS</p>
-    <p align="center">
-
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 ## Description
 
 The Blog Application is a full-featured content management system built with NestJS, designed for creating, managing, and sharing blog posts. It provides a seamless and secure blogging experience with features like authentication and role-based access control
@@ -45,8 +32,9 @@ Nest.js >= v9.0.0
 ## Prerequisites
 1. Setup the environment variables using `env.template` file
 2. Setup `PostgreSQL` DB on local and add the connection string to environment variable `DATABASE_URL`
-3. Run `npx prisma db migrate`
-4. Run `npx prisma seed`. This will insert predefined roles into the database and generate test users.
+3. Run `npx prisma db migrate dev`
+4. Run `npx prisma db seed`. This will insert predefined roles into the database and generate test users.
+5. Run `npx prisma migrate reset` to roll back the migration
 
 ## Running the app
 
