@@ -1,16 +1,16 @@
 ### Features
 
-✅ User Authentication & Authorization – Secure JWT-based authentication with role-based access (Admin, Author, Reader).
+=> User Authentication & Authorization – Secure JWT-based authentication with role-based access (Admin, Author, Reader).
 
-✅ CRUD Operations – Easily create, update, delete, and retrieve blog posts.
+=> CRUD Operations – Easily create, update, delete, and retrieve blog posts.
 
-✅ Dockerized and Managed by ECR
+=> Dockerized and Managed by ECR
 
-✅ Automated Pipelines for CI/CD (with Github Actions)
+=> Automated Pipelines for CI/CD (with Github Actions)
 
-✅ [Prisma](https://www.prisma.io/) ORM for database management.
+=> [Prisma](https://www.prisma.io/) ORM for database management.
 
-✅ API Versioning
+=> API Versioning
 
 
 ## Installation
