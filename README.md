@@ -1,7 +1,3 @@
-## Description
-
-The Blog Application is a full-featured content management system built with NestJS, designed for creating, managing, and sharing blog posts. It provides a seamless and secure blogging experience with features like authentication and role-based access control
-
 ### Features
 
 ✅ User Authentication & Authorization – Secure JWT-based authentication with role-based access (Admin, Author, Reader).
